@@ -545,6 +545,8 @@ export default {
         payerOwes: ({payer}: PayerOwesParams) => `${payer} debe: `,
         payerPaidAmount: ({payer, amount}: PayerPaidAmountParams) => `${payer} pagó ${amount}`,
         payerPaid: ({payer}: PayerPaidParams) => `${payer} pagó: `,
+        payerSpentAmount: ({payer, amount}: PayerPaidAmountParams): string => `${payer} gastó ${amount}`,
+        payerSpent: ({payer}: PayerPaidParams) => `${payer} gastó: `,
         managerApproved: ({manager}: ManagerApprovedParams) => `${manager} aprobó:`,
         payerSettled: ({amount}: PayerSettledParams) => `pagó ${amount}`,
         waitingOnBankAccount: ({submitterDisplayName}: WaitingOnBankAccountParams) => `inicio el pago, pero no se procesará hasta que ${submitterDisplayName} añada una cuenta bancaria`,
@@ -846,6 +848,9 @@ export default {
         bankAccounts: 'Cuentas bancarias',
         addBankAccountToSendAndReceive: 'Añade una cuenta bancaria para enviar y recibir pagos directamente en la aplicación.',
         addBankAccount: 'Agregar cuenta bancaria',
+        assignedCards: 'Tarjetas asignadas',
+        assignedCardsDescription: 'Son tarjetas asignadas por un administrador del Espacio de Trabajo para gestionar los gastos de la empresa.',
+        expensifyCard: 'Tarjeta Expensify',
     },
     cardPage: {
         expensifyCard: 'Tarjeta Expensify',
