@@ -1229,6 +1229,7 @@ function getPersonalDetailsForAccountID(accountID) {
     return (
         (allPersonalDetails && allPersonalDetails[accountID]) || {
             avatar: UserUtils.getDefaultAvatar(accountID),
+            isOptimisticPersonalDetail: true,
         }
     );
 }
@@ -1238,28 +1239,39 @@ function getPersonalDetailsForAccountID(accountID) {
  *
  * @param {Number} accountID
  * @param {Boolean} [shouldUseShortForm]
+ * @param {Boolean} shouldFallbackToHidden
  * @returns {String}
  */
-function getDisplayNameForParticipant(accountID, shouldUseShortForm = false) {
+function getDisplayNameForParticipant(accountID, shouldUseShortForm = false, shouldFallbackToHidden = true) {
     if (!accountID) {
         return '';
     }
     const personalDetails = getPersonalDetailsForAccountID(accountID);
+    // this is to check if account is an invite/optimistically created one
+    // and prevent from falling back to 'Hidden', so a correct value is shown
+    // when searching for a new user
+    if (lodashGet(personalDetails, 'isOptimisticPersonalDetail') === true) {
+        return personalDetails.login || '';
+    }
     const longName = personalDetails.displayName;
     const shortName = personalDetails.firstName || longName;
+    if (!longName && !personalDetails.login && shouldFallbackToHidden) {
+        return Localize.translateLocal('common.hidden');
+    }
     return shouldUseShortForm ? shortName : longName;
 }
 
 /**
  * @param {Object} personalDetailsList
  * @param {Boolean} isMultipleParticipantReport
+ * @param {Boolean} shouldFallbackToHidden
  * @returns {Array}
  */
-function getDisplayNamesWithTooltips(personalDetailsList, isMultipleParticipantReport) {
+function getDisplayNamesWithTooltips(personalDetailsList, isMultipleParticipantReport, shouldFallbackToHidden = true) {
     return _.chain(personalDetailsList)
         .map((user) => {
             const accountID = Number(user.accountID);
-            const displayName = getDisplayNameForParticipant(accountID, isMultipleParticipantReport) || user.login || '';
+            const displayName = getDisplayNameForParticipant(accountID, isMultipleParticipantReport, shouldFallbackToHidden) || user.login || '';
             const avatar = UserUtils.getDefaultAvatar(accountID);
 
             let pronouns = user.pronouns;
@@ -2340,13 +2352,12 @@ function getOptimisticDataForParentReportAction(reportID, lastVisibleActionCreat
  * Builds an optimistic reportAction for the parent report when a task is created
  * @param {String} taskReportID - Report ID of the task
  * @param {String} taskTitle - Title of the task
- * @param {String} taskAssignee - Email of the person assigned to the task
  * @param {Number} taskAssigneeAccountID - AccountID of the person assigned to the task
  * @param {String} text - Text of the comment
  * @param {String} parentReportID - Report ID of the parent report
  * @returns {Object}
  */
-function buildOptimisticTaskCommentReportAction(taskReportID, taskTitle, taskAssignee, taskAssigneeAccountID, text, parentReportID) {
+function buildOptimisticTaskCommentReportAction(taskReportID, taskTitle, taskAssigneeAccountID, text, parentReportID) {
     const reportAction = buildOptimisticAddCommentReportAction(text);
     reportAction.reportAction.message[0].taskReportID = taskReportID;
 
@@ -3911,7 +3922,6 @@ function shouldDisableRename(report, policy) {
 /**
  * Returns the onyx data needed for the task assignee chat
  * @param {Number} accountID
- * @param {String} assigneeEmail
  * @param {Number} assigneeAccountID
  * @param {String} taskReportID
  * @param {String} assigneeChatReportID
@@ -3920,7 +3930,7 @@ function shouldDisableRename(report, policy) {
  * @param {Object} assigneeChatReport
  * @returns {Object}
  */
-function getTaskAssigneeChatOnyxData(accountID, assigneeEmail, assigneeAccountID, taskReportID, assigneeChatReportID, parentReportID, title, assigneeChatReport) {
+function getTaskAssigneeChatOnyxData(accountID, assigneeAccountID, taskReportID, assigneeChatReportID, parentReportID, title, assigneeChatReport) {
     // Set if we need to add a comment to the assignee chat notifying them that they have been assigned a task
     let optimisticAssigneeAddComment;
     // Set if this is a new chat that needs to be created for the assignee
@@ -3988,7 +3998,7 @@ function getTaskAssigneeChatOnyxData(accountID, assigneeEmail, assigneeAccountID
     // If you're choosing to share the task in the same DM as the assignee then we don't need to create another reportAction indicating that you've been assigned
     if (assigneeChatReportID !== parentReportID) {
         const displayname = lodashGet(allPersonalDetails, [assigneeAccountID, 'displayName']) || lodashGet(allPersonalDetails, [assigneeAccountID, 'login'], '');
-        optimisticAssigneeAddComment = buildOptimisticTaskCommentReportAction(taskReportID, title, assigneeEmail, assigneeAccountID, `assigned to ${displayname}`, parentReportID);
+        optimisticAssigneeAddComment = buildOptimisticTaskCommentReportAction(taskReportID, title, assigneeAccountID, `assigned to ${displayname}`, parentReportID);
         const lastAssigneeCommentText = formatReportLastMessageText(optimisticAssigneeAddComment.reportAction.message[0].text);
         const optimisticAssigneeReport = {
             lastVisibleActionCreated: currentTime,
@@ -4058,7 +4068,8 @@ function getIOUReportActionDisplayMessage(reportAction) {
     const originalMessage = _.get(reportAction, 'originalMessage', {});
     let displayMessage;
     if (originalMessage.type === CONST.IOU.REPORT_ACTION_TYPE.PAY) {
-        const {amount, currency, IOUReportID} = originalMessage;
+        const {IOUReportID} = originalMessage;
+        const {amount, currency} = originalMessage.IOUDetails;
         const formattedAmount = CurrencyUtils.convertToDisplayString(amount, currency);
         const iouReport = getReport(IOUReportID);
         const payerName = isExpenseReport(iouReport) ? getPolicyName(iouReport) : getDisplayNameForParticipant(iouReport.managerID, true);
@@ -4295,4 +4306,5 @@ export {
     shouldUseFullTitleToDisplay,
     parseReportRouteParams,
     getReimbursementQueuedActionMessage,
+    getPersonalDetailsForAccountID,
 };
