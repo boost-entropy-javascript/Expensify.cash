@@ -1053,6 +1053,7 @@ export default {
     },
     preferencesPage: {
         receiveRelevantFeatureUpdatesAndExpensifyNews: 'Receive relevant feature updates and Expensify news',
+        muteAllSounds: 'Mute all sounds from Expensify',
     },
     priorityModePage: {
         priorityMode: 'Priority mode',
@@ -1622,6 +1623,9 @@ export default {
             trackDistanceCopy: 'Set the per mile/km rate and choose a default unit to track.',
             trackDistanceRate: 'Rate',
             trackDistanceUnit: 'Unit',
+            trackDistanceChooseUnit: 'Choose a default unit to track.',
+            kilometers: 'Kilometers',
+            miles: 'Miles',
             unlockNextDayReimbursements: 'Unlock next-day reimbursements',
             captureNoVBACopyBeforeEmail: 'Ask your workspace members to forward receipts to ',
             captureNoVBACopyAfterEmail: ' and download the Expensify App to track cash expenses on the go.',
