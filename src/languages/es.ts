@@ -1337,7 +1337,6 @@ export default {
         },
         error: {
             requiredFirstName: 'Introduce tu nombre para continuar',
-            requiredLastName: 'Introduce tu apellido para continuar',
         },
     },
     featureTraining: {
@@ -1997,6 +1996,7 @@ export default {
             deleteFailureMessage: 'Se ha producido un error al intentar eliminar la categoría. Por favor, inténtalo más tarde.',
             categoryName: 'Nombre de la categoría',
             requiresCategory: 'Los miembros deben categorizar todos los gastos',
+            needCategoryForExportToIntegration: 'Se requiere una categoría en cada gasto para poder exportarlo a',
             subtitle: 'Obtén una visión general de dónde te gastas el dinero. Utiliza las categorías predeterminadas o añade las tuyas propias.',
             emptyCategories: {
                 title: 'No has creado ninguna categoría',
@@ -2080,6 +2080,7 @@ export default {
             tagRequiredError: 'Lo nombre de la etiqueta es obligatorio.',
             existingTagError: 'Ya existe una etiqueta con este nombre.',
             genericFailureMessage: 'Se produjo un error al actualizar la etiqueta, inténtelo nuevamente.',
+            importedFromAccountingSoftware: 'Etiquetas importadas desde',
         },
         taxes: {
             subtitle: 'Añade nombres, tasas y establezca valores por defecto para los impuestos.',
@@ -2493,6 +2494,12 @@ export default {
     },
     search: {
         resultsAreLimited: 'Los resultados de búsqueda están limitados.',
+        searchResults: {
+            emptyResults: {
+                title: 'No hay nada que ver aquí',
+                subtitle: 'Por favor intenta crear algo usando el botón verde.',
+            },
+        },
     },
     genericErrorPage: {
         title: '¡Oh-oh, algo salió mal!',
