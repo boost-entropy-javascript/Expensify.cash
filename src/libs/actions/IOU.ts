@@ -1,6 +1,5 @@
 import {format} from 'date-fns';
-import fastMerge from 'expensify-common/lib/fastMerge';
-import Str from 'expensify-common/lib/str';
+import {fastMerge, Str} from 'expensify-common';
 import type {OnyxCollection, OnyxEntry, OnyxUpdate} from 'react-native-onyx';
 import Onyx from 'react-native-onyx';
 import type {ValueOf} from 'type-fest';
@@ -2253,9 +2252,9 @@ function getTrackExpenseInformation(
         createdReportActionIDForThread: optimisticCreatedActionForTransactionThread.reportActionID,
         actionableWhisperReportActionIDParam: actionableTrackExpenseWhisper?.reportActionID ?? '',
         onyxData: {
-            optimisticData: [...optimisticData, ...trackExpenseOnyxData[0]],
-            successData: [...successData, ...trackExpenseOnyxData[1]],
-            failureData: [...failureData, ...trackExpenseOnyxData[2]],
+            optimisticData: optimisticData.concat(trackExpenseOnyxData[0]),
+            successData: successData.concat(trackExpenseOnyxData[1]),
+            failureData: failureData.concat(trackExpenseOnyxData[2]),
         },
     };
 }
