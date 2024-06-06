@@ -32,7 +32,6 @@ import type {
     LogSizeParams,
     ManagerApprovedAmountParams,
     ManagerApprovedParams,
-    NewFaceEnterMagicCodeParams,
     NoLongerHaveAccessParams,
     NotAllowedExtensionParams,
     NotYouParams,
@@ -65,6 +64,7 @@ import type {
     SetTheRequestParams,
     SettledAfterAddedBankAccountParams,
     SettleExpensifyCardParams,
+    SignUpNewFaceCodeParams,
     SizeExceededParams,
     SplitAmountParams,
     StepCounterParams,
@@ -430,11 +430,11 @@ export default {
         anotherLoginPageIsOpen: 'Another login page is open.',
         anotherLoginPageIsOpenExplanation: "You've opened the login page in a separate tab, please login from that specific tab.",
         welcome: 'Welcome!',
+        welcomeWithoutExclamation: 'Welcome',
         phrase2: "Money talks. And now that chat and payments are in one place, it's also easy.",
         phrase3: 'Your payments get to you as fast as you can get your point across.',
         enterPassword: 'Please enter your password',
-        newFaceEnterMagicCode: ({login}: NewFaceEnterMagicCodeParams) =>
-            `It's always great to see a new face around here! Please enter the magic code sent to ${login}. It should arrive within a minute or two.`,
+        welcomeNewFace: ({login}: SignUpNewFaceCodeParams) => `${login}, it's always great to see a new face around here!`,
         welcomeEnterMagicCode: ({login}: WelcomeEnterMagicCodeParams) => `Please enter the magic code sent to ${login}. It should arrive within a minute or two.`,
     },
     login: {
@@ -763,6 +763,8 @@ export default {
         holdReasonRequired: 'A reason is required when holding.',
         expenseOnHold: 'This expense was put on hold. Review the comments for next steps.',
         expensesOnHold: 'All expenses were put on hold. Review the comments for next steps.',
+        expenseDuplicate: 'This expense has the same details as another one. Review the duplicates to remove the hold.',
+        reviewDuplicates: 'Review duplicates',
         confirmApprove: 'Confirm approval amount',
         confirmApprovalAmount: "Approve what's not on hold, or approve the entire report.",
         confirmPay: 'Confirm payment amount',
@@ -1458,6 +1460,9 @@ export default {
         helpConfigure: ' but you may need your IT department to help configure your email settings.',
         onceTheAbove: 'Once the above steps are completed, please reach out to ',
         toUnblock: ' to unblock your login.',
+    },
+    welcomeSignUpForm: {
+        join: 'Join',
     },
     detailsPage: {
         localTime: 'Local time',
@@ -3116,7 +3121,7 @@ export default {
         categoryOutOfPolicy: 'Category no longer valid',
         conversionSurcharge: ({surcharge}: ViolationsConversionSurchargeParams) => `Applied ${surcharge}% conversion surcharge`,
         customUnitOutOfPolicy: 'Unit no longer valid',
-        duplicatedTransaction: 'Potential duplicate',
+        duplicatedTransaction: 'Duplicate',
         fieldRequired: 'Report fields are required',
         futureDate: 'Future date not allowed',
         invoiceMarkup: ({invoiceMarkup}: ViolationsInvoiceMarkupParams) => `Marked up by ${invoiceMarkup}%`,
@@ -3202,6 +3207,19 @@ export default {
         mergedWithCashTransaction: 'matched a receipt to this transaction.',
     },
     subscription: {
+        mobileReducedFunctionalityMessage: 'You can’t make changes to your subscription in the mobile app.',
+        cardSection: {
+            title: 'Payment',
+            subtitle: 'Add a payment card to pay for your Expensify subscription.',
+            addCardButton: 'Add payment card',
+            cardNextPayment: 'Your next payment date is',
+            cardEnding: ({cardNumber}) => `Card ending in ${cardNumber}`,
+            cardInfo: ({name, expiration, currency}) => `Name: ${name}, Expiration: ${expiration}, Currency: ${currency}`,
+            changeCard: 'Change payment card',
+            changeCurrency: 'Change payment currency',
+            cardNotFound: 'No payment card added',
+            retryPaymentButton: 'Retry payment',
+        },
         yourPlan: {
             title: 'Your plan',
             collect: {

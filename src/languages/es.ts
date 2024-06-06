@@ -32,7 +32,6 @@ import type {
     LogSizeParams,
     ManagerApprovedAmountParams,
     ManagerApprovedParams,
-    NewFaceEnterMagicCodeParams,
     NoLongerHaveAccessParams,
     NotAllowedExtensionParams,
     NotYouParams,
@@ -65,6 +64,7 @@ import type {
     SetTheRequestParams,
     SettledAfterAddedBankAccountParams,
     SettleExpensifyCardParams,
+    SignUpNewFaceCodeParams,
     SizeExceededParams,
     SplitAmountParams,
     StepCounterParams,
@@ -422,11 +422,11 @@ export default {
         anotherLoginPageIsOpen: 'Otra página de inicio de sesión está abierta.',
         anotherLoginPageIsOpenExplanation: 'Ha abierto la página de inicio de sesión en una pestaña separada, inicie sesión desde esa pestaña específica.',
         welcome: '¡Bienvenido!',
+        welcomeWithoutExclamation: 'Bienvenido',
         phrase2: 'El dinero habla. Y ahora que chat y pagos están en un mismo lugar, es también fácil.',
         phrase3: 'Tus pagos llegan tan rápido como tus mensajes.',
         enterPassword: 'Por favor, introduce tu contraseña',
-        newFaceEnterMagicCode: ({login}: NewFaceEnterMagicCodeParams) =>
-            `¡Siempre es genial ver una cara nueva por aquí! Por favor ingresa el código mágico enviado a ${login}. Debería llegar en un par de minutos.`,
+        welcomeNewFace: ({login}: SignUpNewFaceCodeParams) => `${login}, siempre es genial ver una cara nueva por aquí!`,
         welcomeEnterMagicCode: ({login}: WelcomeEnterMagicCodeParams) => `Por favor, introduce el código mágico enviado a ${login}. Debería llegar en un par de minutos.`,
     },
     login: {
@@ -758,6 +758,8 @@ export default {
         holdReasonRequired: 'Se requiere una razón para bloquear.',
         expenseOnHold: 'Este gasto está bloqueado. Revisa los comentarios para saber como proceder.',
         expensesOnHold: 'Todos los gastos quedaron bloqueado. Revisa los comentarios para saber como proceder.',
+        expenseDuplicate: 'Esta solicitud tiene los mismos detalles que otra. Revise los duplicados para eliminar la retención.',
+        reviewDuplicates: 'Revisar duplicados',
         confirmApprove: 'Confirmar importe a aprobar',
         confirmApprovalAmount: 'Aprueba lo que no está bloqueado, o aprueba todo el informe.',
         confirmPay: 'Confirmar importe de pago',
@@ -1460,6 +1462,9 @@ export default {
         helpConfigure: ', pero es posible que necesites que el departamento de informática te ayude a configurar los ajustes de correo electrónico.',
         onceTheAbove: 'Una vez completados los pasos anteriores, ponte en contacto con ',
         toUnblock: ' para desbloquear el inicio de sesión.',
+    },
+    welcomeSignUpForm: {
+        join: 'Unirse',
     },
     detailsPage: {
         localTime: 'Hora local',
@@ -3620,7 +3625,7 @@ export default {
         categoryOutOfPolicy: 'La categoría ya no es válida',
         conversionSurcharge: ({surcharge}: ViolationsConversionSurchargeParams = {}) => `${surcharge}% de recargo aplicado`,
         customUnitOutOfPolicy: 'La unidad ya no es válida',
-        duplicatedTransaction: 'Posible duplicado',
+        duplicatedTransaction: 'Duplicado',
         fieldRequired: 'Los campos del informe son obligatorios',
         futureDate: 'Fecha futura no permitida',
         invoiceMarkup: ({invoiceMarkup}: ViolationsInvoiceMarkupParams) => `Incrementado un ${invoiceMarkup}%`,
@@ -3709,6 +3714,19 @@ export default {
         mergedWithCashTransaction: 'encontró un recibo para esta transacción.',
     },
     subscription: {
+        mobileReducedFunctionalityMessage: 'No puedes hacer cambios en tu suscripción en la aplicación móvil.',
+        cardSection: {
+            title: 'Pago',
+            subtitle: 'Añade una tarjeta de pago para abonar tu suscripción a Expensify',
+            addCardButton: 'Añade tarjeta de pago',
+            cardNextPayment: 'Your next payment date is',
+            cardEnding: ({cardNumber}) => `Tarjeta terminada en ${cardNumber}`,
+            cardInfo: ({name, expiration, currency}) => `Nombre: ${name}, Expiración: ${expiration}, Moneda: ${currency}`,
+            changeCard: 'Cambiar tarjeta de pago',
+            changeCurrency: 'Cambiar moneda de pago',
+            cardNotFound: 'No se ha añadido ninguna tarjeta de pago',
+            retryPaymentButton: 'Reintentar el pago',
+        },
         yourPlan: {
             title: 'Tu plan',
             collect: {
