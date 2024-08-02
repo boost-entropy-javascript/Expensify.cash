@@ -903,6 +903,7 @@ type MoneyRequestNavigatorParamList = {
         reportID: string;
         pageIndex?: string;
         backTo?: string;
+        participantsAutoAssigned?: string;
     };
     [SCREENS.MONEY_REQUEST.STEP_SCAN]: {
         action: IOUAction;
@@ -1240,6 +1241,8 @@ type PublicScreensParamList = SharedScreensParamList & {
 type AuthScreensParamList = CentralPaneScreensParamList &
     SharedScreensParamList & {
         [SCREENS.CONCIERGE]: undefined;
+        [SCREENS.TRACK_EXPENSE]: undefined;
+        [SCREENS.SUBMIT_EXPENSE]: undefined;
         [SCREENS.ATTACHMENTS]: {
             reportID: string;
             source: string;
