@@ -636,6 +636,8 @@ const CONST = {
     EXPENSIFY_PACKAGE_FOR_SAGE_INTACCT_FILE_NAME: 'ExpensifyPackageForSageIntacct',
     SAGE_INTACCT_INSTRUCTIONS: 'https://help.expensify.com/articles/expensify-classic/integrations/accounting-integrations/Sage-Intacct',
     HOW_TO_CONNECT_TO_SAGE_INTACCT: 'https://help.expensify.com/articles/expensify-classic/integrations/accounting-integrations/Sage-Intacct#how-to-connect-to-sage-intacct',
+    SAGE_INTACCT_HELP_LINK:
+        "https://help.expensify.com/articles/expensify-classic/connections/sage-intacct/Sage-Intacct-Troubleshooting#:~:text=First%20make%20sure%20that%20you,your%20company's%20Web%20Services%20authorizations.",
     PRICING: `https://www.expensify.com/pricing`,
 
     // Use Environment.getEnvironmentURL to get the complete URL with port number
@@ -1524,6 +1526,7 @@ const CONST = {
         },
         CUSTOM_SEGMENT_FIELDS: ['segmentName', 'internalID', 'scriptID', 'mapping'],
         CUSTOM_LIST_FIELDS: ['listName', 'internalID', 'transactionFieldID', 'mapping'],
+        CUSTOM_FORM_ID_ENABLED: 'enabled',
         CUSTOM_FORM_ID_TYPE: {
             REIMBURSABLE: 'reimbursable',
             NON_REIMBURSABLE: 'nonReimbursable',
@@ -2291,6 +2294,17 @@ const CONST = {
             VISA: 'vcf',
             AMEX: 'gl1025',
         },
+        STEP_NAMES: ['1', '2', '3', '4'],
+        STEP: {
+            ASSIGNEE: 'Assignee',
+            CARD: 'Card',
+            TRANSACTION_START_DATE: 'TransactionStartDate',
+            CONFIRMATION: 'Confirmation',
+        },
+        TRANSACTION_START_DATE_OPTIONS: {
+            FROM_BEGINNING: 'fromBeginning',
+            CUSTOM: 'custom',
+        },
     },
     EXPENSIFY_CARD: {
         BANK: 'Expensify Card',
@@ -2394,6 +2408,7 @@ const CONST = {
         HAS_COLON_ONLY_AT_THE_BEGINNING: /^:[^:]+$/,
         HAS_AT_MOST_TWO_AT_SIGNS: /^@[^@]*@?[^@]*$/,
 
+        EMPTY_COMMENT: /^(\s)*$/,
         SPECIAL_CHAR: /[,/?"{}[\]()&^%;`$=#<>!*]/g,
 
         FIRST_SPACE: /.+?(?=\s)/,
@@ -3803,6 +3818,71 @@ const CONST = {
         EXPENSIFY_LOGO_SIZE_RATIO: 0.22,
         EXPENSIFY_LOGO_MARGIN_RATIO: 0.03,
     },
+
+    /**
+     * Acceptable values for the `accessibilityRole` prop on react native components.
+     *
+     * **IMPORTANT:** Do not use with the `role` prop as it can cause errors.
+     *
+     * @deprecated ACCESSIBILITY_ROLE is deprecated. Please use CONST.ROLE instead.
+     */
+    ACCESSIBILITY_ROLE: {
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        BUTTON: 'button',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        LINK: 'link',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        MENUITEM: 'menuitem',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        TEXT: 'text',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        RADIO: 'radio',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        IMAGEBUTTON: 'imagebutton',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        CHECKBOX: 'checkbox',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        SWITCH: 'switch',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        ADJUSTABLE: 'adjustable',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        IMAGE: 'image',
+
+        /**
+         * @deprecated Please stop using the accessibilityRole prop and use the role prop instead.
+         */
+        TEXTBOX: 'textbox',
+    },
+
     /**
      * Acceptable values for the `role` attribute on react native components.
      *
@@ -5493,6 +5573,12 @@ const CONST = {
             UPDATE: 'update',
             REMOVE: 'remove',
         },
+    },
+
+    BOOT_SPLASH_STATE: {
+        VISIBLE: 'visible',
+        READY_TO_BE_HIDDEN: 'readyToBeHidden',
+        HIDDEN: `hidden`,
     },
 
     CSV_IMPORT_COLUMNS: {
