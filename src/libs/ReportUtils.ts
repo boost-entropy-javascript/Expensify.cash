@@ -3181,6 +3181,13 @@ function canHoldUnholdReportAction(reportAction: OnyxInputOrEntry<ReportAction>)
         return {canHoldRequest: false, canUnholdRequest: false};
     }
 
+    if (isInvoiceReport(moneyRequestReport)) {
+        return {
+            canHoldRequest: false,
+            canUnholdRequest: false,
+        };
+    }
+
     const isRequestSettled = isSettled(moneyRequestReport?.reportID);
     const isApproved = isReportApproved(moneyRequestReport);
     const transactionID = moneyRequestReport ? ReportActionsUtils.getOriginalMessage(reportAction)?.IOUTransactionID : 0;
@@ -3358,7 +3365,7 @@ function getTransactionReportName(reportAction: OnyxEntry<ReportAction | Optimis
     const report = getReportOrDraftReport(transaction?.reportID);
     const amount = TransactionUtils.getAmount(transaction, !isEmptyObject(report) && isExpenseReport(report)) ?? 0;
     const formattedAmount = CurrencyUtils.convertToDisplayString(amount, TransactionUtils.getCurrency(transaction)) ?? '';
-    const comment = (!TransactionUtils.isMerchantMissing(transaction) ? TransactionUtils.getMerchant(transaction) : TransactionUtils.getDescription(transaction)) ?? '';
+    const comment = TransactionUtils.getMerchantOrDescription(transaction);
     if (ReportActionsUtils.isTrackExpenseAction(reportAction)) {
         return Localize.translateLocal('iou.threadTrackReportName', {formattedAmount, comment});
     }
@@ -3409,7 +3416,7 @@ function getReportPreviewMessage(
 
             const amount = TransactionUtils.getAmount(linkedTransaction, !isEmptyObject(report) && isExpenseReport(report)) ?? 0;
             const formattedAmount = CurrencyUtils.convertToDisplayString(amount, TransactionUtils.getCurrency(linkedTransaction)) ?? '';
-            return Localize.translateLocal('iou.didSplitAmount', {formattedAmount, comment: TransactionUtils.getDescription(linkedTransaction) ?? ''});
+            return Localize.translateLocal('iou.didSplitAmount', {formattedAmount, comment: TransactionUtils.getMerchantOrDescription(linkedTransaction)});
         }
     }
 
@@ -3431,7 +3438,7 @@ function getReportPreviewMessage(
 
             const amount = TransactionUtils.getAmount(linkedTransaction, !isEmptyObject(report) && isExpenseReport(report)) ?? 0;
             const formattedAmount = CurrencyUtils.convertToDisplayString(amount, TransactionUtils.getCurrency(linkedTransaction)) ?? '';
-            return Localize.translateLocal('iou.trackedAmount', {formattedAmount, comment: TransactionUtils.getDescription(linkedTransaction) ?? ''});
+            return Localize.translateLocal('iou.trackedAmount', {formattedAmount, comment: TransactionUtils.getMerchantOrDescription(linkedTransaction)});
         }
     }
 
@@ -3507,7 +3514,7 @@ function getReportPreviewMessage(
         linkedTransaction = getLinkedTransaction(iouReportAction);
     }
 
-    let comment = !isEmptyObject(linkedTransaction) ? TransactionUtils.getDescription(linkedTransaction) : undefined;
+    let comment = !isEmptyObject(linkedTransaction) ? TransactionUtils.getMerchantOrDescription(linkedTransaction) : undefined;
     if (!isEmptyObject(originalReportAction) && ReportActionsUtils.isReportPreviewAction(originalReportAction) && ReportActionsUtils.getNumberOfMoneyRequests(originalReportAction) !== 1) {
         comment = undefined;
     }
@@ -3841,6 +3848,9 @@ function getReportName(
             return Parser.htmlToText(getReportAutomaticallyApprovedMessage(parentReportAction));
         }
         return getIOUApprovedMessage(parentReportAction);
+    }
+    if (ReportActionsUtils.isUnapprovedAction(parentReportAction)) {
+        return getIOUUnapprovedMessage(parentReportAction);
     }
 
     if (isChatThread(report)) {
@@ -4492,6 +4502,35 @@ function buildOptimisticInvoiceReport(chatReportID: string, policyID: string, re
 }
 
 /**
+ * Returns the stateNum and statusNum for an expense report based on the policy settings
+ * @param policy
+ */
+function getExpenseReportStateAndStatus(policy: OnyxEntry<Policy>) {
+    const isInstantSubmitEnabled = PolicyUtils.isInstantSubmitEnabled(policy);
+    const isSubmitAndClose = PolicyUtils.isSubmitAndClose(policy);
+    const arePaymentsDisabled = policy?.reimbursementChoice === CONST.POLICY.REIMBURSEMENT_CHOICES.REIMBURSEMENT_NO;
+
+    if (isInstantSubmitEnabled && arePaymentsDisabled && isSubmitAndClose) {
+        return {
+            stateNum: CONST.REPORT.STATE_NUM.APPROVED,
+            statusNum: CONST.REPORT.STATUS_NUM.CLOSED,
+        };
+    }
+
+    if (isInstantSubmitEnabled) {
+        return {
+            stateNum: CONST.REPORT.STATE_NUM.SUBMITTED,
+            statusNum: CONST.REPORT.STATUS_NUM.SUBMITTED,
+        };
+    }
+
+    return {
+        stateNum: CONST.REPORT.STATE_NUM.OPEN,
+        statusNum: CONST.REPORT.STATUS_NUM.OPEN,
+    };
+}
+
+/**
  * Builds an optimistic Expense report with a randomly generated reportID
  *
  * @param chatReportID - Report ID of the PolicyExpenseChat where the Expense Report is
@@ -4517,10 +4556,7 @@ function buildOptimisticExpenseReport(
     const formattedTotal = CurrencyUtils.convertToDisplayString(storedTotal, currency);
     const policy = getPolicy(policyID);
 
-    const isInstantSubmitEnabled = PolicyUtils.isInstantSubmitEnabled(policy);
-
-    const stateNum = isInstantSubmitEnabled ? CONST.REPORT.STATE_NUM.SUBMITTED : CONST.REPORT.STATE_NUM.OPEN;
-    const statusNum = isInstantSubmitEnabled ? CONST.REPORT.STATUS_NUM.SUBMITTED : CONST.REPORT.STATUS_NUM.OPEN;
+    const {stateNum, statusNum} = getExpenseReportStateAndStatus(policy);
 
     const expenseReport: OptimisticExpenseReport = {
         reportID: generateReportID(),
@@ -4566,6 +4602,7 @@ function getFormattedAmount(reportAction: ReportAction) {
         !ReportActionsUtils.isSubmittedAction(reportAction) &&
         !ReportActionsUtils.isForwardedAction(reportAction) &&
         !ReportActionsUtils.isApprovedAction(reportAction) &&
+        !ReportActionsUtils.isUnapprovedAction(reportAction) &&
         !ReportActionsUtils.isSubmittedAndClosedAction(reportAction)
     ) {
         return '';
@@ -4587,6 +4624,10 @@ function getIOUSubmittedMessage(reportAction: ReportAction<typeof CONST.REPORT.A
 
 function getReportAutomaticallyApprovedMessage(reportAction: ReportAction<typeof CONST.REPORT.ACTIONS.TYPE.APPROVED>) {
     return Localize.translateLocal('iou.automaticallyApprovedAmount', {amount: getFormattedAmount(reportAction)});
+}
+
+function getIOUUnapprovedMessage(reportAction: ReportAction<typeof CONST.REPORT.ACTIONS.TYPE.UNAPPROVED>) {
+    return Localize.translateLocal('iou.unapprovedAmount', {amount: getFormattedAmount(reportAction)});
 }
 
 function getIOUApprovedMessage(reportAction: ReportAction<typeof CONST.REPORT.ACTIONS.TYPE.APPROVED>) {
@@ -7288,7 +7329,7 @@ function getIOUReportActionDisplayMessage(reportAction: OnyxEntry<ReportAction>,
     }
     return Localize.translateLocal(translationKey, {
         formattedAmount,
-        comment: TransactionUtils.getDescription(transaction) ?? '',
+        comment: TransactionUtils.getMerchantOrDescription(transaction),
     });
 }
 
@@ -8208,6 +8249,7 @@ export {
     getIOUReportActionDisplayMessage,
     getIOUReportActionMessage,
     getReportAutomaticallyApprovedMessage,
+    getIOUUnapprovedMessage,
     getIOUApprovedMessage,
     getReportAutomaticallyForwardedMessage,
     getIOUForwardedMessage,
