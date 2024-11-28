@@ -38,6 +38,7 @@ import type {
     ChangeTypeParams,
     CharacterLengthLimitParams,
     CharacterLimitParams,
+    ChatWithAccountManagerParams,
     CompanyCardBankName,
     CompanyCardFeedNameParams,
     CompanyNameParams,
@@ -189,6 +190,7 @@ import type {
     WelcomeNoteParams,
     WelcomeToRoomParams,
     WeSentYouMagicSignInLinkParams,
+    WorkspaceLockedPlanTypeParams,
     WorkspaceOwnerWillNeedToAddOrUpdatePaymentCardParams,
     YourPlanPriceParams,
     ZipCodeExampleFormatParams,
@@ -465,6 +467,8 @@ const translations = {
         sent: 'Enviado',
         links: 'Enlaces',
         days: 'días',
+        chatWithAccountManager: ({accountManagerDisplayName}: ChatWithAccountManagerParams) => `¿Necesitas algo específico? Habla con tu gerente de cuenta, ${accountManagerDisplayName}.`,
+        chatNow: 'Chatear ahora',
     },
     connectionComplete: {
         title: 'Conexión completa',
@@ -763,6 +767,7 @@ const translations = {
         column: ({name}: SpreadSheetColumnParams) => `Columna ${name}`,
         fieldNotMapped: ({fieldName}: SpreadFieldNameParams) => `¡Vaya! Un campo obligatorio ("${fieldName}") no ha sido mapeado. Por favor, revisa e inténtalo de nuevo.`,
         singleFieldMultipleColumns: ({fieldName}: SpreadFieldNameParams) => `¡Vaya! Has mapeado un solo campo ("${fieldName}") a varias columnas. Por favor, revisa e inténtalo de nuevo.`,
+        emptyMappedField: ({fieldName}: SpreadFieldNameParams) => `¡Vaya! El campo ("${fieldName}") contiene uno o más valores vacíos. Por favor, revísalo e inténtalo de nuevo.`,
         importFailedTitle: 'Fallo en la importación',
         importFailedDescription: 'Por favor, asegúrate de que todos los campos estén llenos correctamente e inténtalo de nuevo. Si el problema persiste, por favor contacta a Concierge.',
         importCategoriesSuccessfullDescription: ({categories}: SpreadCategoriesParams) => (categories > 1 ? `Se han agregado ${categories} categorías.` : 'Se ha agregado 1 categoría.'),
@@ -2553,6 +2558,7 @@ const translations = {
                         return 'Miembro';
                 }
             },
+            planType: 'Tipo de plan',
             submitExpense: 'Envíe los gastos utilizando el chat de su espacio de trabajo:',
             defaultCategory: 'Categoría predeterminada',
         },
@@ -4237,6 +4243,23 @@ const translations = {
             confirmText: 'Sí, exportar de nuevo',
             cancelText: 'Cancelar',
         },
+        planTypePage: {
+            planTypes: {
+                team: {
+                    label: 'Collect',
+                    description: 'Para equipos que buscan automatizar sus procesos.',
+                },
+                corporate: {
+                    label: 'Recolectar',
+                    description: 'Para organizaciones con requisitos avanzados.',
+                },
+            },
+            description: 'Elige el plan adecuado para ti. Para ver una lista detallada de funciones y precios, consulta nuestra',
+            subscriptionLink: 'página de ayuda sobre tipos de planes y precios',
+            lockedPlanDescription: ({subscriptionUsersCount, annualSubscriptionEndDate}: WorkspaceLockedPlanTypeParams) =>
+                `Tienes un compromiso anual de ${subscriptionUsersCount} miembros activos en el plan Control hasta el ${annualSubscriptionEndDate}. Puedes cambiar a una suscripción de pago por uso y desmejorar al plan Recopilar a partir del ${annualSubscriptionEndDate} desactivando la renovación automática en`,
+            subscriptions: 'Suscripciones',
+        },
         upgrade: {
             reportFields: {
                 title: 'Los campos',
@@ -4317,6 +4340,19 @@ const translations = {
                 viewSubscription: 'Ver su suscripción',
                 moreDetails: 'para obtener más información.',
                 gotIt: 'Entendido, gracias.',
+            },
+            commonFeatures: {
+                title: 'Actualiza tu espacio de trabajo al plan Controlar',
+                note: 'Obtén acceso a todas nuestras funciones más avanzadas, incluyendo:',
+                benefits: {
+                    note: 'El plan Controlar comienza en $9 por miembro activo al mes.',
+                    learnMore: 'Obtén más información',
+                    pricing: 'sobre nuestros planes y precios.',
+                    benefit1: 'Conexiones contables avanzadas (NetSuite, Sage Intacct y más)',
+                    benefit2: 'Reglas de gastos',
+                    benefit3: 'Flujos de aprobación múltiples',
+                    benefit4: 'Controles de seguridad mejorados',
+                },
             },
         },
         restrictedAction: {
@@ -4579,6 +4615,8 @@ const translations = {
         deleteSavedSearchConfirm: '¿Estás seguro de que quieres eliminar esta búsqueda?',
         groupedExpenses: 'gastos agrupados',
         bulkActions: {
+            approve: 'Aprobar',
+            pay: 'Pagar',
             delete: 'Eliminar',
             hold: 'Bloquear',
             unhold: 'Desbloquear',
