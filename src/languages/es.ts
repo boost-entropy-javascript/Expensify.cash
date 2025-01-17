@@ -1982,7 +1982,7 @@ const translations = {
         chooseAnAccountBelow: 'Elige una cuenta a continuación',
         addBankAccount: 'Añadir cuenta bancaria',
         chooseAnAccount: 'Elige una cuenta',
-        connectOnlineWithPlaid: 'Conectar con Plaid',
+        connectOnlineWithPlaid: 'Inicia sesión en tu banco',
         connectManually: 'Conectar manualmente',
         desktopConnection: 'Para conectarse con Chase, Wells Fargo, Capital One o Bank of America, haz clic aquí para completar este proceso en un navegador.',
         yourDataIsSecure: 'Tus datos están seguros',
@@ -3398,8 +3398,8 @@ const translations = {
                     text: 'Obtén más información sobre estas ',
                     linkText: 'opciones.',
                 },
-                customFeedDetails: 'Requiere configuración con tu banco. Esto es más común para empresas grandes, y la mejor opción, si calificas.',
-                directFeedDetails: 'Conéctate ahora usando tus credenciales maestras. Esto es lo más común.',
+                customFeedDetails: 'Requiere configuración con tu banco. Esto suele ser utilizado por empresas más grandes y a menudo es la mejor opción si calificas.',
+                directFeedDetails: 'El enfoque más simple. Conéctate de inmediato usando tus credenciales maestras. Este método es el más común.',
                 enableFeed: {
                     title: ({provider}: GoBackMessageParams) => `Habilita tu feed ${provider}`,
                     heading:
